@@ -2,8 +2,21 @@ import spacy
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List
+from spacy.pipeline import EntityRuler
 
 model = spacy.load("ru_core_news_lg")
+config = {
+   "phrase_matcher_attr": None,
+   "validate": True,
+   "overwrite_ents": True,
+   "ent_id_sep": "||",
+}
+ruler = model.add_pipe("entity_ruler", config=config)
+patterns = [
+    {"label":"WEAPON", "pattern": "Калачников", "id": "kalachnikov"},
+    {"label":"WEAPON", "pattern": "Калачникова", "id": "kalachnikov"}
+    ]
+ruler.add_patterns(patterns)
 
 app = FastAPI()
 
